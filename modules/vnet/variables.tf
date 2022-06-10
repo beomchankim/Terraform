@@ -25,18 +25,18 @@ variable "dns_servers" {
   default     = [""]
 }
 
-variable "subnet_name_1" {
-  default = ""
-}
+# variable "subnet_name_1" {
+#   default = ""
+# }
 
-variable "subnet_address_1" {
-  default = ""
-}
+# variable "subnet_address_1" {
+#   default = ""
+# }
 
-variable "subnet_name_2" {
-  default = ""
-}
+# variable "subnet_name_2" {
+#   default = ""
+# }
 
-variable "subnet_address_2" {
-  default = ""
-}
+# variable "subnet_address_2" {
+#   default = ""
+# }

@@ -6,16 +6,14 @@ variable "rg_location" {
   default = ""
 }
 
-variable "subnet_name" {
+variable "pip_name" {
   default = ""
 }
 
-variable "subnet_address" {
-  type    = list(any)
-  default = [""]
-}
-
-variable "vnet_name" {
+variable "allocation_method" {
   default = ""
 }
 
+variable "pip_sku" {
+  default = ""
+}
