@@ -1,13 +1,35 @@
+############################## Resource Group ##############################
+variable "rg_object" {
+  default = {
+    "rg-hub-bckim" = {
+      rg_name = "rg-hub-bckim"
+      rg_location = "KoreaCentral"
+    },
+    "rg-prd-bckim" = {
+      rg_name = "rg-prd-bckim"
+      rg_location = "KoreaCentral"
+    },
+    "rg-dev-bckim" = {
+      rg_name = "rg-dev-bckim"
+      rg_location = "KoreaCentral"
+    }
+  }
+}
+
 ############################## VNET ##############################
 variable "vnet_object" {
   default = {
+    "vnet-hub-bckim" = {
+      rg_name    = "rg-hub-bckim"
+      vnet_address = ["10.0.0.0/16"]
+    },
     "vnet-prd-bckim" = {
-      vnet_name    = "vnet-prd-bckim"
-      vnet_address = ["172.27.0.0/22"]
+      rg_name    = "rg-prd-bckim"
+      vnet_address = ["20.0.0.0/16"]
     },
     "vnet-dev-bckim" = {
-      vnet_name    = "vnet-dev-bckim"
-      vnet_address = ["192.168.0.0/24"]
+      rg_name    = "rg-dev-bckim"
+      vnet_address = ["30.0.0.0/16"]
     }
   }
 }
@@ -15,29 +37,29 @@ variable "vnet_object" {
 ############################## Subnet ##############################
 variable "subnet_object" {
   default = {
-    "snet-prd-bckim-web-172.27.0.0-26" = {
-      subnet_address = ["172.27.0.0/26"]
-      vnet_name      = "vnet-prd-bckim"
+    "snet-hub-bckim-agw-10.0.1.0-24" = {
+      subnet_address = ["10.0.1.0-24"]
+      vnet_name      = "snet-hub-bckim-agw-10.0.1.0-24"
     },
-    "snet-prd-bckim-was-172.27.0.64-26" = {
-      subnet_address = ["172.27.0.64/26"]
-      vnet_name      = "vnet-prd-bckim"
+    "snet-hub-bckim-mgt-10.0.2.0-24" = {
+      subnet_address = ["10.0.2.0-24"]
+      vnet_name      = "snet-hub-bckim-mgt-10.0.2.0-24"
     },
-    "snet-prd-bckim-brdb-172.27.0.128-26" = {
-      subnet_address = ["172.27.0.128/26"]
-      vnet_name      = "vnet-prd-bckim"
+    "snet-prd-bckim-web-20.0.1.0-24" = {
+      subnet_address = ["20.0.1.0/24"]
+      vnet_name      = "snet-prd-bckim-web-20.0.1.0-24"
     },
-    "snet-prd-bckim-agw-172.27.1.0-24" = {
-      subnet_address = ["172.27.1.0/24"]
-      vnet_name      = "vnet-prd-bckim"
+    "snet-prd-bckim-db-20.0.2.0-24" = {
+      subnet_address = ["20.0.2.0/24"]
+      vnet_name      = "snet-prd-bckim-db-20.0.2.0-24"
     },
-    "snet-dev-bckim-web-192.168.0.0-26" = {
-      subnet_address = ["192.168.0.0/26"]
-      vnet_name      = "vnet-dev-bckim"
+    "snet-dev-bckim-web-30.0.1.0-24" = {
+      subnet_address = ["30.0.1.0/24"]
+      vnet_name      = "snet-dev-bckim-web-30.0.1.0-24"
     },
-    "GatewaySubnet" = {
-      subnet_address = ["172.27.2.0/26"]
-      vnet_name      = "vnet-prd-bckim"
+    "snet-dev-bckim-db-30.0.2.0-24" = {
+      subnet_address = ["30.0.2.0/24"]
+      vnet_name      = "snet-dev-bckim-db-30.0.2.0-24"
     }
   }
 }
@@ -128,7 +150,6 @@ variable "pip_object" {
     }
   }
 }
-
 
 ############################## VM ##############################
 variable "vm_object" {

@@ -5,9 +5,10 @@ locals {
 }
 # Resource Group
 module "rg" {
+  for_each    = var.rg_object
   source      = "./modules/rg"
-  rg_name     = local.rg_name
-  rg_location = local.rg_location
+  rg_name     = each.key
+  rg_location = each.value.rg_location
 }
 # Virtual Network 
 module "vnet" {
