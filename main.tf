@@ -15,8 +15,8 @@ module "vnet" {
   depends_on   = [module.rg]
   for_each     = var.vnet_object
   source       = "./modules/vnet"
-  rg_name      = local.rg_name
-  rg_location  = local.rg_location
+  rg_name      = each.value.rg_name
+  rg_location  = each.value.rg_location
   vnet_name    = each.key
   vnet_address = each.value.vnet_address
 }
@@ -25,7 +25,7 @@ module "subnet" {
   depends_on     = [module.vnet]
   for_each       = var.subnet_object
   source         = "./modules/subnet"
-  rg_name        = local.rg_name
+  rg_name        = each.value.rg_name
   vnet_name      = each.value.vnet_name
   subnet_name    = each.key
   subnet_address = each.value.subnet_address
@@ -35,8 +35,8 @@ module "nsg" {
   depends_on  = [module.rg, module.vnet, module.subnet]
   for_each    = var.nsg_object
   source      = "./modules/nsg"
-  rg_name     = local.rg_name
-  rg_location = local.rg_location
+  rg_name     = each.value.rg_name
+  rg_location = each.value.rg_location
   nsg_name    = each.key
   subnet_id   = module.subnet[each.value.subnet_name].subnet_id
 }
@@ -45,7 +45,7 @@ module "nsg_rule" {
   depends_on                 = [module.nsg]
   for_each                   = var.nsg_rule_object
   source                     = "./modules/nsgRule"
-  rg_name                    = local.rg_name
+  rg_name                    = each.value.rg_name
   nsg_name                   = each.value.nsg_name
   nsg_rule_name              = each.value.nsg_rule_name
   priority                   = each.value.priority
@@ -62,8 +62,8 @@ module "pip" {
   depends_on        = [module.rg]
   for_each          = var.pip_object
   source            = "./modules/pip"
-  rg_name           = local.rg_name
-  rg_location       = local.rg_location
+  rg_name           = each.value.rg_name
+  rg_location       = each.value.rg_location
   pip_name          = each.key
   allocation_method = each.value.allocation_method
   pip_sku           = each.value.pip_sku
@@ -73,8 +73,8 @@ module "vm" {
   depends_on                    = [module.subnet]
   for_each                      = var.vm_object
   source                        = "./modules/vm"
-  rg_name                       = local.rg_name
-  rg_location                   = local.rg_location
+  rg_name                       = each.value.rg_name
+  rg_location                   = each.value.rg_location
   nic_name                      = each.value.nic_name
   subnet_name                   = each.value.subnet_name
   subnet_id                     = module.subnet[each.value.subnet_name].subnet_id
@@ -104,7 +104,7 @@ module "peering" {
   depends_on     = [module.vnet]
   for_each       = var.peering_object
   source         = "./modules/peering"
-  rg_name        = local.rg_name
+  rg_name        = each.value.rg_name
   peering_name   = each.key
   vnet_name      = each.value.vnet_name
   remote_vnet_id = module.vnet[each.value.remote_vnet_name].vnet_id
@@ -115,8 +115,8 @@ module "agw" {
   for_each    = var.agw_object
   source      = "./modules/agw"
   agw_name    = each.key
-  rg_name     = local.rg_name
-  rg_location = local.rg_location
+  rg_name     = each.value.rg_name
+  rg_location = each.value.rg_location
 
   sku_name = each.value.sku_name
   sku_tier = each.value.sku_tier

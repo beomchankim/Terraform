@@ -38,28 +38,34 @@ variable "vnet_object" {
 variable "subnet_object" {
   default = {
     "snet-hub-bckim-agw-10.0.1.0-24" = {
+      rg_name        = "rg-hub-bckim"
       subnet_address = ["10.0.1.0-24"]
-      vnet_name      = "snet-hub-bckim-agw-10.0.1.0-24"
+      vnet_name      = "vnet-hub-bckim"
     },
     "snet-hub-bckim-mgt-10.0.2.0-24" = {
+      rg_name        = "rg-hub-bckim"
       subnet_address = ["10.0.2.0-24"]
-      vnet_name      = "snet-hub-bckim-mgt-10.0.2.0-24"
+      vnet_name      = "vnet-hub-bckim"
     },
     "snet-prd-bckim-web-20.0.1.0-24" = {
+      rg_name        = "rg-prd-bckim"
       subnet_address = ["20.0.1.0/24"]
-      vnet_name      = "snet-prd-bckim-web-20.0.1.0-24"
+      vnet_name      = "vnet-prd-bckim"
     },
     "snet-prd-bckim-db-20.0.2.0-24" = {
+      rg_name        = "rg-prd-bckim"
       subnet_address = ["20.0.2.0/24"]
-      vnet_name      = "snet-prd-bckim-db-20.0.2.0-24"
+      vnet_name      = "vnet-prd-bckim"
     },
     "snet-dev-bckim-web-30.0.1.0-24" = {
+      rg_name        = "rg-dev-bckim"
       subnet_address = ["30.0.1.0/24"]
-      vnet_name      = "snet-dev-bckim-web-30.0.1.0-24"
+      vnet_name      = "vnet-dev-bckim"
     },
     "snet-dev-bckim-db-30.0.2.0-24" = {
+      rg_name        = "rg-dev-bckim"
       subnet_address = ["30.0.2.0/24"]
-      vnet_name      = "snet-dev-bckim-db-30.0.2.0-24"
+      vnet_name      = "vnet-dev-bckim"
     }
   }
 }
@@ -67,21 +73,15 @@ variable "subnet_object" {
 ############################## NSG ##############################
 variable "nsg_object" {
   default = {
-    "nsg-prd-bckim-web01" = {
-      nsg_name    = "nsg-prd-bckim-web01"
-      subnet_name = "snet-prd-bckim-web-172.27.0.0-26"
+    "nsg-hub-mgt" = {
+
+      subnet_name = "snet-hub-mgt-bckim-10.0.2.0-24"
     },
-    "nsg-prd-bckim-was01" = {
-      nsg_name    = "nsg-prd-bckim-was01"
-      subnet_name = "snet-prd-bckim-was-172.27.0.64-26"
+    "nsg-prd-web" = {
+      subnet_name = "snet-prd-web-bckim-20.0.1.0-24"
     },
-    "nsg-prd-bckim-brdb01" = {
-      nsg_name    = "nsg-prd-bckim-brdb01"
-      subnet_name = "snet-prd-bckim-brdb-172.27.0.128-26"
-    },
-    "nsg-dev-bckim-web01" = {
-      nsg_name    = "nsg-dev-bckim-brdb01"
-      subnet_name = "snet-dev-bckim-web-192.168.0.0-26"
+    "nsg-dev-web" = {
+      subnet_name = "snet-dev-bckim-web-30.0.1.0-24"
     }
   }
 }
@@ -89,9 +89,8 @@ variable "nsg_object" {
 ############################## NSG Rule ##############################
 variable "nsg_rule_object" {
   default = {
-    "nsg-prd-bckim-web01-ssh" = {
-      nsg_name                   = "nsg-prd-bckim-web01"
-      nsg_rule_name              = "nsg-prd-bckim-web01-ssh"
+    "nsg-rule-hub-mgt-ssh" = {
+      nsg_name                   = "nsg-hub-mgt"
       priority                   = 100
       direction                  = "Inbound"
       access                     = "Allow"
@@ -101,10 +100,20 @@ variable "nsg_rule_object" {
       source_address_prefix      = "*"
       destination_address_prefix = "*"
     },
-    "nsg-prd-bckim-web01-http" = {
-      nsg_name                   = "nsg-prd-bckim-was01"
-      nsg_rule_name              = "nsg-prd-bckim-was01-http"
+    "nsg-rule-prd-web-ssh" = {
+      nsg_name                   = "nsg-prd-web"
       priority                   = 100
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "22"
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+    },
+    "nsg-rule-prd-web-http" = {
+      nsg_name                   = "nsg-prd-web"
+      priority                   = 110
       direction                  = "Inbound"
       access                     = "Allow"
       protocol                   = "Tcp"
@@ -113,22 +122,20 @@ variable "nsg_rule_object" {
       source_address_prefix      = "*"
       destination_address_prefix = "*"
     },
-    "nsg-prd-bckim-brdb01-http" = {
-      nsg_name                   = "nsg-prd-bckim-brdb01"
-      nsg_rule_name              = "nsg-prd-bckim-brdb01-http"
+    "nsg-rule-dev-web-ssh" = {
+      nsg_name                   = "nsg-dev-web"
       priority                   = 100
       direction                  = "Inbound"
       access                     = "Allow"
       protocol                   = "Tcp"
       source_port_range          = "*"
-      destination_port_range     = "80"
+      destination_port_range     = "22"
       source_address_prefix      = "*"
       destination_address_prefix = "*"
     },
-    "nsg-dev-bckim-web01-http" = {
-      nsg_name                   = "nsg-dev-bckim-web01"
-      nsg_rule_name              = "nsg-dev-bckim-web01-http"
-      priority                   = 100
+    "nsg-rule-dev-web-http" = {
+      nsg_name                   = "nsg-dev-web"
+      priority                   = 110
       direction                  = "Inbound"
       access                     = "Allow"
       protocol                   = "Tcp"
@@ -154,14 +161,14 @@ variable "pip_object" {
 ############################## VM ##############################
 variable "vm_object" {
   default = {
-    "vm-prd-bckim-web-01" = {
-      nic_name                      = "nic-bckim-test-01"
-      subnet_name                   = "snet-prd-bckim-web-172.27.0.0-26"
-      ip_name                       = "pip01"
+    "vm-hub-mgt-bckim-01" = {
+      nic_name                      = "nic-hub-mgt-bckim-01"
+      subnet_name                   = "snet-hub-bckim-mgt-10.0.2.0-24"
+      ip_name                       = "pip-hub-mgt-bckim-01"
       private_ip_address_allocation = "Static"
-      private_ip_address            = "172.27.0.6"
+      private_ip_address            = "10.0.0.11"
 
-      vm_name = "vm-prd-bckim-web-01"
+      vm_name = "vm-hub-mgt-bckim-01"
       vm_size = "Standard_B1s"
 
       storage_image_publisher = "OpenLogic"
@@ -169,24 +176,49 @@ variable "vm_object" {
       storage_image_sku       = "7_6-gen2"
       storage_image_version   = "latest"
 
-      storage_os_disk_name          = "ssd01"
+      storage_os_disk_name          = "osdisk-hub-mgt-bckim-01"
       storage_os_disk_caching       = "ReadWrite"
       storage_os_disk_create_option = "FromImage"
       storage_os_disk_type          = "Premium_LRS"
+      storage_os_disk_size_gb       = "30"
+
+      os_profile_computer_name  = "vm-hub-mgt-bckim-01"
+      os_profile_admin_username = "bckim"
+      os_profile_admin_password = "qjacksdl293!"
+    },
+    "vm-prd-web-bckim-01" = {
+      nic_name                      = "nic-prd-web-bckim-01"
+      subnet_name                   = "snet-prd-web-bckim-20.0.1.0-24"
+      ip_name                       = "pip-prd-web-bckim-01"
+      private_ip_address_allocation = "Static"
+      private_ip_address            = "20.0.0.11"
+
+      vm_name = "vm-prd-web-bckim-01"
+      vm_size = "Standard_B1s"
+
+      storage_image_publisher = "OpenLogic"
+      storage_image_offer     = "CentOS"
+      storage_image_sku       = "7_6-gen2"
+      storage_image_version   = "latest"
+
+      storage_os_disk_name          = "osdisk-prd-web-bckim-01"
+      storage_os_disk_caching       = "ReadWrite"
+      storage_os_disk_create_option = "FromImage"
+      storage_os_disk_type          = "Standard_LRS"
       storage_os_disk_size_gb       = "50"
 
-      os_profile_computer_name  = "vm-prd-bckim-web-01"
+      os_profile_computer_name  = "vm-prd-web-bckim-01"
       os_profile_admin_username = "bckim"
-      os_profile_admin_password = "qwer1234!@#$"
+      os_profile_admin_password = "qjacksdl293!"
     },
-    "vm-prd-bckim-web-02" = {
-      nic_name                      = "nic02"
-      subnet_name                   = "snet-prd-bckim-web-172.27.0.0-26"
-      ip_name                       = "nic02"
+    "vm-prd-web-bckim-02" = {
+      nic_name                      = "nic-prd-web-bckim-01"
+      subnet_name                   = "snet-prd-web-bckim-20.0.1.0-24"
+      ip_name                       = "pip-prd-web-bckim-02"
       private_ip_address_allocation = "Static"
-      private_ip_address            = "172.27.0.7"
+      private_ip_address            = "20.0.0.12"
 
-      vm_name = "vm-prd-bckim-web-02"
+      vm_name = "vm-prd-web-bckim-02"
       vm_size = "Standard_B1s"
 
       storage_image_publisher = "OpenLogic"
@@ -194,24 +226,24 @@ variable "vm_object" {
       storage_image_sku       = "7_6-gen2"
       storage_image_version   = "latest"
 
-      storage_os_disk_name          = "ssd02"
+      storage_os_disk_name          = "osdisk-prd-web-bckim-02"
       storage_os_disk_caching       = "ReadWrite"
       storage_os_disk_create_option = "FromImage"
       storage_os_disk_type          = "Standard_LRS"
-      storage_os_disk_size_gb       = null
+      storage_os_disk_size_gb       = "50"
 
-      os_profile_computer_name  = "vm-prd-bckim-web-02"
+      os_profile_computer_name  = "vm-prd-web-bckim-02"
       os_profile_admin_username = "bckim"
-      os_profile_admin_password = "qwer1234!@#$"
+      os_profile_admin_password = "qjacksdl293!"
     },
-    "vm-prd-bckim-web-03" = {
-      nic_name                      = "nic03"
-      subnet_name                   = "snet-dev-bckim-web-192.168.0.0-26"
-      ip_name                       = "nic03"
+    "vm-dev-web-bckim-01" = {
+      nic_name                      = "nic-dev-web-bckim-01"
+      subnet_name                   = "snet-dev-web-bckim-30.0.1.0-24"
+      ip_name                       = "pip-dev-web-bckim-01"
       private_ip_address_allocation = "Static"
-      private_ip_address            = "192.168.0.5"
+      private_ip_address            = "30.0.0.11"
 
-      vm_name = "vm-prd-bckim-web-03"
+      vm_name = "vm-dev-web-bckim-01"
       vm_size = "Standard_B1s"
 
       storage_image_publisher = "OpenLogic"
@@ -219,65 +251,15 @@ variable "vm_object" {
       storage_image_sku       = "7_6-gen2"
       storage_image_version   = "latest"
 
-      storage_os_disk_name          = "ssd03"
+      storage_os_disk_name          = "osdisk-dev-web-bckim-01"
       storage_os_disk_caching       = "ReadWrite"
       storage_os_disk_create_option = "FromImage"
       storage_os_disk_type          = "Standard_LRS"
-      storage_os_disk_size_gb       = null
+      storage_os_disk_size_gb       = "50"
 
-      os_profile_computer_name  = "vm-prd-bckim-web-03"
+      os_profile_computer_name  = "vm-dev-web-bckim-01"
       os_profile_admin_username = "bckim"
-      os_profile_admin_password = "qwer1234!@#$"
-    },
-    "vm-prd-bckim-web-04" = {
-      nic_name                      = "nic04"
-      subnet_name                   = "snet-dev-bckim-web-192.168.0.0-26"
-      ip_name                       = "nic04"
-      private_ip_address_allocation = "Static"
-      private_ip_address            = "192.168.0.4"
-
-      vm_name = "vm-prd-bckim-web-04"
-      vm_size = "Standard_B1s"
-
-      storage_image_publisher = "OpenLogic"
-      storage_image_offer     = "CentOS"
-      storage_image_sku       = "7_6-gen2"
-      storage_image_version   = "latest"
-
-      storage_os_disk_name          = "ssd04"
-      storage_os_disk_caching       = "ReadWrite"
-      storage_os_disk_create_option = "FromImage"
-      storage_os_disk_type          = "Standard_LRS"
-      storage_os_disk_size_gb       = null
-
-      os_profile_computer_name  = "vm-prd-bckim-web-04"
-      os_profile_admin_username = "bckim"
-      os_profile_admin_password = "qwer1234!@#$"
-    },
-    "vm-prd-bckim-web-05" = {
-      nic_name                      = "nic05"
-      subnet_name                   = "snet-prd-bckim-web-172.27.0.0-26"
-      ip_name                       = "nic05"
-      private_ip_address_allocation = "Static"
-      private_ip_address            = "172.27.0.5"
-
-      vm_name = "vm-prd-bckim-web-05"
-      vm_size = "Standard_B1s"
-
-      storage_image_publisher = "OpenLogic"
-      storage_image_offer     = "CentOS"
-      storage_image_sku       = "7_6-gen2"
-      storage_image_version   = "latest"
-
-      storage_os_disk_name          = "ssd05"
-      storage_os_disk_caching       = "ReadWrite"
-      storage_os_disk_create_option = "FromImage"
-      storage_os_disk_type          = "Standard_LRS"
-      storage_os_disk_size_gb       = null
-
-      os_profile_computer_name  = "vm-prd-bckim-web-05"
-      os_profile_admin_username = "bckim"
-      os_profile_admin_password = "qwer1234!@#$"
+      os_profile_admin_password = "qjacksdl293!"
     }
   }
 }
@@ -285,13 +267,13 @@ variable "vm_object" {
 ############################## Vnet Peering ##############################
 variable "peering_object" {
   default = {
-    "prd-peer-dev" = {
-      vnet_name        = "vnet-prd-bckim"
-      remote_vnet_name = "vnet-dev-bckim"
-    },
-    "dev-peer-prd" = {
-      vnet_name        = "vnet-dev-bckim"
+    "hub-peer-prd" = {
+      vnet_name        = "vnet-hub-bckim"
       remote_vnet_name = "vnet-prd-bckim"
+    },
+    "hub-peer-dev" = {
+      vnet_name        = "vnet-hub-bckim"
+      remote_vnet_name = "vnet-dev-bckim"
     }
   }
 }
@@ -299,21 +281,21 @@ variable "peering_object" {
 ############################## AGW ##############################
 variable "agw_object" {
   default = {
-    "agw-bckim-prd-01" = {
+    "agw-hub-bckim-01" = {
       sku_name = "Standard_v2"
       sku_tier = "Standard_v2"
       capacity = "2"
 
-      agw_ip_name = "pip-agw-bckim-prd-01"
-      subnet_name = "snet-prd-bckim-agw-172.27.1.0-24"
+      subnet_name = "snet-hub-agw-bckim-10.0.1.0-24"
+      agw_ip_name = "pip-agw-hub-bckim-01"
 
-      frontend_port_name = "agw-frontend-prd-01"
+      frontend_port_name = "agw-frontport-prd-web-80"
       frontend_port      = "80"
-      frontend_ip_name   = "pip-agw-bckim-prd-01"
+      frontend_ip_name   = "pip-agw-hub-bckim-01"
 
-      backend_address_pool_name = "agw-backend-prd-01"
+      backend_address_pool_name = "agw-backpool-prd-web-01"
 
-      http_setting_name     = "agw-http-prd-01"
+      http_setting_name     = "agw-httpsetting-prd-web-01"
       cookie_based_affinity = "Disabled"
 
       backend_path            = "/"
@@ -321,10 +303,10 @@ variable "agw_object" {
       backend_protocol        = "Http"
       backend_request_timeout = "60"
 
-      listener_name                  = "agw-listen-prd-01"
-      frontend_ip_configuration_name = "pip-agw-bckim-prd-01"
+      listener_name                  = "agw-listener-prd-web-80"
+      frontend_ip_configuration_name = "pip-agw-hub-bckim-01"
       listener_protocol              = "Http"
-      request_routing_rule_name      = "agw-routing-rule-prd-01"
+      request_routing_rule_name      = "agw-routingrule-prd-web-01"
       rule_type                      = "Basic"
     }
   }
