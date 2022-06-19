@@ -74,13 +74,15 @@ variable "subnet_object" {
 variable "nsg_object" {
   default = {
     "nsg-hub-mgt" = {
-
+      rg_name     = "rg-hub-bckim"
       subnet_name = "snet-hub-mgt-bckim-10.0.2.0-24"
     },
     "nsg-prd-web" = {
+      rg_name     = "rg-prd-bckim"
       subnet_name = "snet-prd-web-bckim-20.0.1.0-24"
     },
     "nsg-dev-web" = {
+      rg_name     = "rg-dev-bckim"
       subnet_name = "snet-dev-bckim-web-30.0.1.0-24"
     }
   }
@@ -90,6 +92,7 @@ variable "nsg_object" {
 variable "nsg_rule_object" {
   default = {
     "nsg-rule-hub-mgt-ssh" = {
+      rg_name                    = "rg-hub-bckim"
       nsg_name                   = "nsg-hub-mgt"
       priority                   = 100
       direction                  = "Inbound"
@@ -101,6 +104,7 @@ variable "nsg_rule_object" {
       destination_address_prefix = "*"
     },
     "nsg-rule-prd-web-ssh" = {
+      rg_name                    = "rg-prd-bckim"
       nsg_name                   = "nsg-prd-web"
       priority                   = 100
       direction                  = "Inbound"
@@ -112,6 +116,7 @@ variable "nsg_rule_object" {
       destination_address_prefix = "*"
     },
     "nsg-rule-prd-web-http" = {
+      rg_name                    = "rg-prd-bckim"
       nsg_name                   = "nsg-prd-web"
       priority                   = 110
       direction                  = "Inbound"
@@ -123,6 +128,7 @@ variable "nsg_rule_object" {
       destination_address_prefix = "*"
     },
     "nsg-rule-dev-web-ssh" = {
+      rg_name                    = "rg-dev-bckim"
       nsg_name                   = "nsg-dev-web"
       priority                   = 100
       direction                  = "Inbound"
@@ -134,6 +140,7 @@ variable "nsg_rule_object" {
       destination_address_prefix = "*"
     },
     "nsg-rule-dev-web-http" = {
+      rg_name                    = "rg-dev-bckim"
       nsg_name                   = "nsg-dev-web"
       priority                   = 110
       direction                  = "Inbound"
@@ -150,8 +157,9 @@ variable "nsg_rule_object" {
 ############################## PIP ############################
 variable "pip_object" {
   default = {
-    "pip-agw-bckim-prd-01" = {
-      pip_name          = "pip-agw-bckim-prd-01"
+    "pip-agw-hub-bckim-01" = {
+      rg_name           = "rg-hub-bckim"
+      pip_name          = "pip-agw-hub-bckim-01"
       allocation_method = "Static"
       pip_sku           = "Standard"
     }
@@ -162,6 +170,7 @@ variable "pip_object" {
 variable "vm_object" {
   default = {
     "vm-hub-mgt-bckim-01" = {
+      rg_name                       = "rg-hub-bckim"
       nic_name                      = "nic-hub-mgt-bckim-01"
       subnet_name                   = "snet-hub-bckim-mgt-10.0.2.0-24"
       ip_name                       = "pip-hub-mgt-bckim-01"
@@ -187,6 +196,7 @@ variable "vm_object" {
       os_profile_admin_password = "qjacksdl293!"
     },
     "vm-prd-web-bckim-01" = {
+      rg_name                       = "rg-prd-bckim"
       nic_name                      = "nic-prd-web-bckim-01"
       subnet_name                   = "snet-prd-web-bckim-20.0.1.0-24"
       ip_name                       = "pip-prd-web-bckim-01"
@@ -212,6 +222,7 @@ variable "vm_object" {
       os_profile_admin_password = "qjacksdl293!"
     },
     "vm-prd-web-bckim-02" = {
+      rg_name                       = "rg-prd-bckim"
       nic_name                      = "nic-prd-web-bckim-01"
       subnet_name                   = "snet-prd-web-bckim-20.0.1.0-24"
       ip_name                       = "pip-prd-web-bckim-02"
@@ -237,6 +248,7 @@ variable "vm_object" {
       os_profile_admin_password = "qjacksdl293!"
     },
     "vm-dev-web-bckim-01" = {
+      rg_name                       = "rg-dev-bckim"
       nic_name                      = "nic-dev-web-bckim-01"
       subnet_name                   = "snet-dev-web-bckim-30.0.1.0-24"
       ip_name                       = "pip-dev-web-bckim-01"
@@ -268,10 +280,12 @@ variable "vm_object" {
 variable "peering_object" {
   default = {
     "hub-peer-prd" = {
+      rg_name          = "rg-hub-bckim"
       vnet_name        = "vnet-hub-bckim"
       remote_vnet_name = "vnet-prd-bckim"
     },
     "hub-peer-dev" = {
+      rg_name          = "rg-hub-bckim"
       vnet_name        = "vnet-hub-bckim"
       remote_vnet_name = "vnet-dev-bckim"
     }
@@ -282,6 +296,7 @@ variable "peering_object" {
 variable "agw_object" {
   default = {
     "agw-hub-bckim-01" = {
+      rg_name  = "rg-hub-bckim"
       sku_name = "Standard_v2"
       sku_tier = "Standard_v2"
       capacity = "2"
